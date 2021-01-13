@@ -1,6 +1,4 @@
-package com.aimanissa.android.newsfeed.api
-
-import com.aimanissa.android.newsfeed.NewsItem
+package com.aimanissa.android.newsfeed.data.app.model
 
 class NewsResponse(
     var status: String = "",

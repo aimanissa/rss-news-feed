@@ -1,4 +1,4 @@
-package com.aimanissa.android.newsfeed.api
+package com.aimanissa.android.newsfeed.data.app.model
 
 class SourceResponse(
     var id: String,

@@ -1,13 +1,22 @@
-package com.aimanissa.android.newsfeed
+package com.aimanissa.android.newsfeed.ui.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import java.util.*
+import com.aimanissa.android.newsfeed.data.app.model.NewsItem
+import com.aimanissa.android.newsfeed.R
+import com.aimanissa.android.newsfeed.adapter.NewsAdapter
+import com.aimanissa.android.newsfeed.databinding.ActivityMainBinding
+import com.aimanissa.android.newsfeed.ui.fragments.NewsDetailsFragment
+import com.aimanissa.android.newsfeed.ui.fragments.NewsFeedFragment
 
-class MainActivity : AppCompatActivity(), NewsFeedFragment.Callbacks {
+class MainActivity : AppCompatActivity(), NewsAdapter.OnItemClickListener {
+
+    private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         val isFragmentContainerEmpty = savedInstanceState == null
         if (isFragmentContainerEmpty) {
@@ -18,7 +27,7 @@ class MainActivity : AppCompatActivity(), NewsFeedFragment.Callbacks {
         }
     }
 
-    override fun newsItemSelected(newsItem: NewsItem) {
+    override fun onItemClick(newsItem: NewsItem) {
         val fragment = NewsDetailsFragment.newInstance(newsItem)
         supportFragmentManager
             .beginTransaction()
