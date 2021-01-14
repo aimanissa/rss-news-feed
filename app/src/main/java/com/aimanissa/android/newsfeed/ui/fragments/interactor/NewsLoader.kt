@@ -25,9 +25,9 @@ class NewsLoader {
             .map { it.articles }
             .subscribeOn(Schedulers.io())
             .subscribe({
-                NewsApplication.database.newsDao().apply {
-                    insertNewsList(it)
-                    updateNewsList(it)
+                NewsApplication.database.apply {
+                    clearAllTables()
+                    newsDao().insertNewsList(it)
                 }
             }, {
                 Log.e(TAG, "NewsResponse error: ${it?.message}")

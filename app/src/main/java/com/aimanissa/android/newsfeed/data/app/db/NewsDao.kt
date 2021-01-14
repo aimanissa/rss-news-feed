@@ -13,6 +13,4 @@ interface NewsDao {
     @Query("SELECT * FROM news_headlines")
     fun getNewsList(): LiveData<List<NewsItem>>
 
-    @Update
-    fun updateNewsList(newsList: List<NewsItem>)
 }
