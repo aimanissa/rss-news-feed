@@ -1,21 +1,23 @@
 package com.aimanissa.android.newsfeed
 
 import android.app.Application
-import com.aimanissa.android.newsfeed.data.app.db.NewsDatabase
+import com.aimanissa.android.newsfeed.di.components.AppComponent
+import com.aimanissa.android.newsfeed.di.components.DaggerAppComponent
+import com.aimanissa.android.newsfeed.di.modules.AppModule
 
 class NewsApplication : Application() {
 
-    companion object {
-        lateinit var instance: NewsApplication
-        lateinit var database: NewsDatabase
-    }
-
-    init {
-        instance = this
-    }
-
     override fun onCreate() {
         super.onCreate()
-        database = NewsDatabase.getInstance(this)
+        initAppComponent()
+    }
+
+    private fun initAppComponent() {
+        appComponent = DaggerAppComponent.builder()
+            .appModule(AppModule(this)).build()
+    }
+
+    companion object {
+        lateinit var appComponent: AppComponent
     }
 }

@@ -7,10 +7,10 @@ import com.aimanissa.android.newsfeed.data.app.model.NewsItem
 import com.aimanissa.android.newsfeed.databinding.NewsItemBinding
 import com.squareup.picasso.Picasso
 
-class NewsAdapter(private var newsItems: ArrayList<NewsItem>) :
-    RecyclerView.Adapter<NewsAdapter.NewsHolder>() {
+class NewsAdapter : RecyclerView.Adapter<NewsAdapter.NewsHolder>() {
 
-    var onItemClickListener: OnItemClickListener? = null
+    var onItemClickListener: ((String) -> Unit)? = null
+    private var newsItems = mutableListOf<NewsItem>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewsHolder {
         val binding = NewsItemBinding.inflate(
@@ -22,34 +22,33 @@ class NewsAdapter(private var newsItems: ArrayList<NewsItem>) :
     }
 
     override fun onBindViewHolder(holder: NewsHolder, position: Int) {
-        with(holder) {
-            with(newsItems[position]) {
-                newsItemBinding.newsTitle.text = title
-                newsItemBinding.newsDescription.text = description
-                Picasso.get()
-                    .load(urlToImage)
-                    .into(newsItemBinding.newsImageView)
-
-                holder.newsItemBinding.root.setOnClickListener {
-                    onItemClickListener?.onItemClick(this)
-                }
-            }
-        }
+        holder.bind(newsItems[position])
     }
 
     override fun getItemCount(): Int = newsItems.size
 
     fun updateNews(updatedNews: List<NewsItem>) {
         newsItems.clear()
-        newsItems.addAll(updatedNews)
+        newsItems = updatedNews.toMutableList()
         notifyDataSetChanged()
     }
 
     inner class NewsHolder(val newsItemBinding: NewsItemBinding) :
-        RecyclerView.ViewHolder(newsItemBinding.root)
+        RecyclerView.ViewHolder(newsItemBinding.root) {
 
-    interface OnItemClickListener {
-        fun onItemClick(newsItem: NewsItem)
+        init {
+            itemView.setOnClickListener {
+                onItemClickListener?.invoke(newsItems[adapterPosition].title)
+            }
+        }
+
+        fun bind(newsItem: NewsItem) {
+            newsItemBinding.newsTitle.text = newsItem.title
+            newsItemBinding.newsDescription.text = newsItem.description
+            Picasso.get()
+                .load(newsItem.urlToImage)
+                .into(newsItemBinding.newsImageView)
+        }
     }
 }
 

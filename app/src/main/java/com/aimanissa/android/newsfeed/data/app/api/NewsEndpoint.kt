@@ -1,11 +1,10 @@
 package com.aimanissa.android.newsfeed.data.app.api
 
-import com.aimanissa.android.newsfeed.data.app.model.NewsResponse
 import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface NewsApi {
+interface NewsEndpoint {
 
     @GET("top-headlines")
     fun fetchNews(
