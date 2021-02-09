@@ -4,32 +4,23 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.aimanissa.android.newsfeed.R
 import com.aimanissa.android.newsfeed.adapter.NewsAdapter
 import com.aimanissa.android.newsfeed.data.app.model.NewsItem
 import com.aimanissa.android.newsfeed.databinding.FragmentNewsFeedBinding
-import com.aimanissa.android.newsfeed.di.components.NewsFeedFragmentSubcomponent
 import com.aimanissa.android.newsfeed.ui.activity.MainActivity
+import moxy.MvpAppCompatFragment
+import moxy.presenter.InjectPresenter
 
-class NewsFeedFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
+class NewsFeedFragment : MvpAppCompatFragment(), NewsFeedView, SwipeRefreshLayout.OnRefreshListener {
+
+    @InjectPresenter
+    lateinit var presenter: NewsFeedPresenter
 
     private var binding: FragmentNewsFeedBinding? = null
-    private lateinit var viewModel: NewsFeedViewModel
-    private lateinit var component: NewsFeedFragmentSubcomponent
     private lateinit var newsAdapter: NewsAdapter
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        component = (activity as MainActivity).mainActivityComponent().newsFeedComponent()
-        viewModel = ViewModelProvider(this, component.viewModelFactory())
-            .get(NewsFeedViewModel::class.java)
-        lifecycle.addObserver(viewModel)
-        viewModel.initViewModel()
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -57,10 +48,6 @@ class NewsFeedFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             adapter = newsAdapter
         }
 
-        viewModel.apply {
-            loadedNews.observe({ viewLifecycleOwner.lifecycle }, ::setItems)
-        }
-
         return binding!!.root
     }
 
@@ -70,11 +57,11 @@ class NewsFeedFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     override fun onRefresh() {
-        viewModel.onRefresh()
+        presenter.onRefresh()
         binding?.swipeRefresh?.isRefreshing = false
     }
 
-    private fun setItems(items: List<NewsItem>) {
+    override fun setItems(items: List<NewsItem>) {
         newsAdapter.updateNews(items)
     }
 

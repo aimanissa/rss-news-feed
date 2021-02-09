@@ -49,8 +49,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun mainActivityComponent() = NewsApplication.appComponent.getMainActivitySubcomponent()
-
     companion object {
         private const val TAG_DETAILS_FRAGMENT = "NewsDetailsFragment"
     }

@@ -5,36 +5,27 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import com.aimanissa.android.newsfeed.R
 import com.aimanissa.android.newsfeed.data.app.model.NewsItem
 import com.aimanissa.android.newsfeed.databinding.FragmentNewsDetailsBinding
-import com.aimanissa.android.newsfeed.di.components.NewsDetailsFragmentSubcomponent
 import com.aimanissa.android.newsfeed.ui.activity.MainActivity
 import com.squareup.picasso.Picasso
+import moxy.MvpAppCompatFragment
+import moxy.presenter.InjectPresenter
 
-class NewsDetailsFragment : Fragment() {
+class NewsDetailsFragment : MvpAppCompatFragment(), NewsDetailsView {
+
+    @InjectPresenter
+    lateinit var presenter: NewsDetailsPresenter
 
     private var binding: FragmentNewsDetailsBinding? = null
     private var newsItem: NewsItem? = null
-    private lateinit var viewModel: NewsDetailsViewModel
-    private lateinit var component: NewsDetailsFragmentSubcomponent
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        component = (activity as MainActivity).mainActivityComponent().newsDetailsComponent()
-
-        viewModel = ViewModelProvider(this, component.viewModelFactory())
-            .get(NewsDetailsViewModel::class.java)
-
         val selectedNewsTitle = arguments?.getString(ARG_NEWS_TITLE)
-        selectedNewsTitle?.let { viewModel.setSelectedNewsTitle(it) }
-
-        lifecycle.addObserver(viewModel)
-        viewModel.initViewModel()
-
+        selectedNewsTitle?.let { presenter.selectedNewsTitle = it }
     }
 
     override fun onCreateView(
@@ -54,10 +45,6 @@ class NewsDetailsFragment : Fragment() {
             }
         }
 
-        viewModel.apply {
-            loadedNewsItem.observe({ viewLifecycleOwner.lifecycle }, ::setItem)
-        }
-
         return binding!!.root
     }
 
@@ -66,12 +53,11 @@ class NewsDetailsFragment : Fragment() {
         super.onDestroyView()
     }
 
-    private fun setItem(newsItem: NewsItem?) {
-        this.newsItem = newsItem
-        updateUI()
+    override fun setItem(item: NewsItem) {
+        this.newsItem = item
     }
 
-    private fun updateUI() {
+    override fun updateUI() {
         binding?.apply {
             newsTitle.text = newsItem?.title
             newsDescription.text = newsItem?.description

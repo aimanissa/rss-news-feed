@@ -1,24 +1,30 @@
 package com.aimanissa.android.newsfeed.ui.fragments.feed
 
 import android.util.Log
-import androidx.lifecycle.*
-import com.aimanissa.android.newsfeed.data.app.model.NewsItem
+import com.aimanissa.android.newsfeed.NewsApplication
 import com.aimanissa.android.newsfeed.ui.fragments.interactor.NewsFeedLoader
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import moxy.InjectViewState
+import moxy.MvpPresenter
 import javax.inject.Inject
 
-class NewsFeedViewModel @Inject constructor(
-    private var loader: NewsFeedLoader
-) : ViewModel(), LifecycleObserver {
+@InjectViewState
+class NewsFeedPresenter : MvpPresenter<NewsFeedView>() {
+
+    @Inject
+    lateinit var loader: NewsFeedLoader
 
     private var loadDisposable: Disposable? = null
 
-    val loadedNews = MutableLiveData<List<NewsItem>>()
+    override fun onFirstViewAttach() {
+        super.onFirstViewAttach()
+        NewsApplication.appComponent
+            .getMainActivitySubcomponent()
+            .newsFeedComponent()
+            .inject(this)
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
-    fun initViewModel() {
         initData()
     }
 
@@ -36,7 +42,7 @@ class NewsFeedViewModel @Inject constructor(
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                loadedNews.value = it
+                viewState.setItems(it)
             }, {
                 Log.e(TAG, "loadNews() error: ${it?.message}")
             })
@@ -48,18 +54,19 @@ class NewsFeedViewModel @Inject constructor(
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                loadedNews.value = it
+                viewState.setItems(it)
             }, {
                 Log.e(TAG, "loadNewsFromDb() error: ${it?.message}")
             })
     }
 
-    override fun onCleared() {
-        super.onCleared()
+    override fun onDestroy() {
+        super.onDestroy()
         loadDisposable?.dispose()
     }
 
     companion object {
-        private const val TAG = "NewsFeedViewModel"
+        private const val TAG = "NewsFeedPresenter"
     }
+
 }
