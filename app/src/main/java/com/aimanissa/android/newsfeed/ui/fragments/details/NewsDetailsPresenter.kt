@@ -11,21 +11,15 @@ import moxy.MvpPresenter
 import javax.inject.Inject
 
 @InjectViewState
-class NewsDetailsPresenter : MvpPresenter<NewsDetailsView>() {
-
-    @Inject
-    lateinit var loader: NewsDetailsLoader
+class NewsDetailsPresenter @Inject constructor(
+    private val loader: NewsDetailsLoader
+) : MvpPresenter<NewsDetailsView>() {
 
     private var loadDisposable: Disposable? = null
     lateinit var selectedNewsTitle: String
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        NewsApplication.appComponent
-            .getMainActivitySubcomponent()
-            .newsDetailsComponent()
-            .inject(this)
-
         initData()
     }
 

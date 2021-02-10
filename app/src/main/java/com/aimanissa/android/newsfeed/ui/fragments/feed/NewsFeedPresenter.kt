@@ -11,20 +11,14 @@ import moxy.MvpPresenter
 import javax.inject.Inject
 
 @InjectViewState
-class NewsFeedPresenter : MvpPresenter<NewsFeedView>() {
-
-    @Inject
-    lateinit var loader: NewsFeedLoader
+class NewsFeedPresenter @Inject constructor(
+    private val loader: NewsFeedLoader
+) : MvpPresenter<NewsFeedView>() {
 
     private var loadDisposable: Disposable? = null
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        NewsApplication.appComponent
-            .getMainActivitySubcomponent()
-            .newsFeedComponent()
-            .inject(this)
-
         initData()
     }
 

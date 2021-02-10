@@ -10,9 +10,11 @@ import com.aimanissa.android.newsfeed.R
 import com.aimanissa.android.newsfeed.adapter.NewsAdapter
 import com.aimanissa.android.newsfeed.data.app.model.NewsItem
 import com.aimanissa.android.newsfeed.databinding.FragmentNewsFeedBinding
+import com.aimanissa.android.newsfeed.di.components.NewsFeedFragmentSubcomponent
 import com.aimanissa.android.newsfeed.ui.activity.MainActivity
 import moxy.MvpAppCompatFragment
 import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 
 class NewsFeedFragment : MvpAppCompatFragment(), NewsFeedView, SwipeRefreshLayout.OnRefreshListener {
 
@@ -21,6 +23,18 @@ class NewsFeedFragment : MvpAppCompatFragment(), NewsFeedView, SwipeRefreshLayou
 
     private var binding: FragmentNewsFeedBinding? = null
     private lateinit var newsAdapter: NewsAdapter
+    private lateinit var component: NewsFeedFragmentSubcomponent
+
+    @ProvidePresenter
+    fun providePresenter(): NewsFeedPresenter {
+        return component.providePresenter()
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        component = (activity as MainActivity).mainActivityComponent().newsFeedComponent()
+        component.inject(this)
+        super.onCreate(savedInstanceState)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,

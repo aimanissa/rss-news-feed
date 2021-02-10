@@ -8,10 +8,12 @@ import androidx.core.content.ContextCompat
 import com.aimanissa.android.newsfeed.R
 import com.aimanissa.android.newsfeed.data.app.model.NewsItem
 import com.aimanissa.android.newsfeed.databinding.FragmentNewsDetailsBinding
+import com.aimanissa.android.newsfeed.di.components.NewsDetailsFragmentSubcomponent
 import com.aimanissa.android.newsfeed.ui.activity.MainActivity
 import com.squareup.picasso.Picasso
 import moxy.MvpAppCompatFragment
 import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 
 class NewsDetailsFragment : MvpAppCompatFragment(), NewsDetailsView {
 
@@ -20,10 +22,18 @@ class NewsDetailsFragment : MvpAppCompatFragment(), NewsDetailsView {
 
     private var binding: FragmentNewsDetailsBinding? = null
     private var newsItem: NewsItem? = null
+    private lateinit var component: NewsDetailsFragmentSubcomponent
+
+    @ProvidePresenter
+    fun providePresenter(): NewsDetailsPresenter {
+        return component.providePresenter()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        component = (activity as MainActivity).mainActivityComponent().newsDetailsComponent()
+        component.inject(this)
         super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
+
         val selectedNewsTitle = arguments?.getString(ARG_NEWS_TITLE)
         selectedNewsTitle?.let { presenter.selectedNewsTitle = it }
     }

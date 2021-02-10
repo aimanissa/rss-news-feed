@@ -45,9 +45,13 @@ class MainActivity : AppCompatActivity() {
         super.onBackPressed()
         val detailsFragment = supportFragmentManager.findFragmentByTag(TAG_DETAILS_FRAGMENT)
         if (detailsFragment != null) {
-            supportFragmentManager.popBackStack()
+            supportFragmentManager.beginTransaction()
+                .remove(detailsFragment)
+                .commit()
         }
     }
+
+    fun mainActivityComponent() = NewsApplication.appComponent.getMainActivitySubcomponent()
 
     companion object {
         private const val TAG_DETAILS_FRAGMENT = "NewsDetailsFragment"
