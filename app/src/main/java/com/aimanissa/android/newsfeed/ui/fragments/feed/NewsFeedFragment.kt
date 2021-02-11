@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.aimanissa.android.newsfeed.R
-import com.aimanissa.android.newsfeed.adapter.NewsAdapter
+import com.aimanissa.android.newsfeed.ui.fragments.feed.adapter.NewsAdapter
 import com.aimanissa.android.newsfeed.data.app.model.NewsItem
 import com.aimanissa.android.newsfeed.databinding.FragmentNewsFeedBinding
 import com.aimanissa.android.newsfeed.di.components.NewsFeedFragmentSubcomponent

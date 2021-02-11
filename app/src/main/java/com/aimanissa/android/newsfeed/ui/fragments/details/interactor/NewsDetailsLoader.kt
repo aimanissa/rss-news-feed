@@ -1,4 +1,4 @@
-package com.aimanissa.android.newsfeed.ui.fragments.interactor
+package com.aimanissa.android.newsfeed.ui.fragments.details.interactor
 
 import com.aimanissa.android.newsfeed.data.app.db.repository.NewsRepositoryImpl
 import com.aimanissa.android.newsfeed.data.app.model.NewsItem

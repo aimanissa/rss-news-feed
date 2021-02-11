@@ -1,4 +1,4 @@
-package com.aimanissa.android.newsfeed.adapter
+package com.aimanissa.android.newsfeed.ui.fragments.feed.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

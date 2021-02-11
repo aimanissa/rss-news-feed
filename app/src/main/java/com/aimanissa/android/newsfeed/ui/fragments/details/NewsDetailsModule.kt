@@ -1,13 +1,12 @@
-package com.aimanissa.android.newsfeed.di.modules
+package com.aimanissa.android.newsfeed.ui.fragments.details
 
 import dagger.Module
 
-
 @Module
-class NewsFeedModule {
+class NewsDetailsModule {
 
 //    @Provides
-//    fun viewModelFactory(newsListProvider: Provider<NewsFeedViewModel>): ViewModelProvider.Factory {
+//    fun viewModelFactory(newsListProvider: Provider<NewsDetailsViewModel>): ViewModelProvider.Factory {
 //        return object : ViewModelProvider.Factory {
 //            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
 //                return newsListProvider.get() as T

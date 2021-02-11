@@ -1,8 +1,7 @@
 package com.aimanissa.android.newsfeed.ui.fragments.details
 
 import android.util.Log
-import com.aimanissa.android.newsfeed.NewsApplication
-import com.aimanissa.android.newsfeed.ui.fragments.interactor.NewsDetailsLoader
+import com.aimanissa.android.newsfeed.ui.fragments.details.interactor.NewsDetailsLoader
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
