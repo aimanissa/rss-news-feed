@@ -24,9 +24,11 @@ class NewsFeedFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     private lateinit var viewModel: NewsFeedViewModel
     private lateinit var component: NewsFeedFragmentSubcomponent
     private lateinit var newsAdapter: NewsAdapter
+    private var searchQuery: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        savedInstanceState?.getString(KEY_SEARCH_QUERY)
         setHasOptionsMenu(true)
         component = (activity as MainActivity).mainActivityComponent().newsFeedComponent()
         viewModel = ViewModelProvider(this, component.viewModelFactory())
@@ -93,6 +95,7 @@ class NewsFeedFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                 override fun onQueryTextSubmit(query: String?): Boolean {
                     Log.d(TAG, "onQueryTextSubmit: $query")
                     query?.let { viewModel.loadSearchNews(it) }
+                    searchQuery = query
 
                     //hide keyboard after input
                     val inputManager =
@@ -106,11 +109,27 @@ class NewsFeedFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                     return false
                 }
             })
+
+            setOnSearchClickListener {
+                this.setQuery(searchQuery, false)
+            }
+
+            setOnCloseListener {
+                searchQuery = null
+                onActionViewCollapsed()
+                true
+            }
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(KEY_SEARCH_QUERY, searchQuery)
     }
 
     companion object {
         private const val TAG = "NewsFeedFragment"
+        private const val KEY_SEARCH_QUERY = "searchQuery"
 
         fun newInstance() = NewsFeedFragment()
     }
