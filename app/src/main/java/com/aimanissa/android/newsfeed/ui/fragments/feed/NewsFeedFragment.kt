@@ -28,7 +28,6 @@ class NewsFeedFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        savedInstanceState?.getString(KEY_SEARCH_QUERY)
         setHasOptionsMenu(true)
         component = (activity as MainActivity).mainActivityComponent().newsFeedComponent()
         viewModel = ViewModelProvider(this, component.viewModelFactory())
@@ -122,14 +121,8 @@ class NewsFeedFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         }
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putString(KEY_SEARCH_QUERY, searchQuery)
-    }
-
     companion object {
         private const val TAG = "NewsFeedFragment"
-        private const val KEY_SEARCH_QUERY = "searchQuery"
 
         fun newInstance() = NewsFeedFragment()
     }
