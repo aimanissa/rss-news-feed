@@ -3,7 +3,7 @@ package com.aimanissa.android.newsfeed.ui.fragments.feed
 import android.util.Log
 import androidx.lifecycle.*
 import com.aimanissa.android.newsfeed.data.app.model.NewsItem
-import com.aimanissa.android.newsfeed.ui.fragments.interactor.NewsFeedLoader
+import com.aimanissa.android.newsfeed.ui.fragments.feed.interactor.NewsFeedLoader
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
@@ -51,6 +51,18 @@ class NewsFeedViewModel @Inject constructor(
                 loadedNews.value = it
             }, {
                 Log.e(TAG, "loadNewsFromDb() error: ${it?.message}")
+            })
+    }
+
+    fun loadSearchNews(query: String) {
+        loadDisposable?.dispose()
+        loadDisposable = loader.loadSearchNews(query)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                loadedNews.value = it
+            }, {
+                Log.e(TAG, "loadSearchNews() error: ${it?.message}")
             })
     }
 

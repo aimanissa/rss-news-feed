@@ -1,4 +1,4 @@
-package com.aimanissa.android.newsfeed.ui.fragments.interactor
+package com.aimanissa.android.newsfeed.ui.fragments.feed.interactor
 
 import com.aimanissa.android.newsfeed.data.app.api.NewsEndpoint
 import com.aimanissa.android.newsfeed.data.app.db.repository.NewsRepositoryImpl
@@ -15,7 +15,7 @@ class NewsFeedLoader @Inject constructor(
 ) {
 
     fun loadNews(): Single<List<NewsItem>> {
-        return endPoint.fetchNews(QUERY_COUNTRY, QUERY_CATEGORY, QUERY_SIZE, API_KEY)
+        return endPoint.loadNews(QUERY_COUNTRY, QUERY_SIZE, API_KEY)
             .map { it.articles }
             .map { mapper.newsApiListToNewsItemsList(it) }
             .doOnSuccess {
@@ -31,9 +31,21 @@ class NewsFeedLoader @Inject constructor(
         return Single.fromCallable { repository.getAll() }
     }
 
+    fun loadSearchNews(query: String): Single<List<NewsItem>> {
+        return endPoint.searchNews(query, API_KEY)
+            .map { it.articles }
+            .map { mapper.newsApiListToNewsItemsList(it) }
+            .doOnSuccess {
+                repository.apply {
+                    deleteAll()
+                    saveAll(it)
+                }
+            }
+            .flatMap { loadNewsFromDb() }
+    }
+
     companion object {
         private const val QUERY_COUNTRY = "ru"
-        private const val QUERY_CATEGORY = "technology"
         private const val QUERY_SIZE = "30"
     }
 }
