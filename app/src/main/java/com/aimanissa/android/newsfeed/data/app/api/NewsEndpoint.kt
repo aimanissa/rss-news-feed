@@ -1,5 +1,6 @@
 package com.aimanissa.android.newsfeed.data.app.api
 
+import io.reactivex.Maybe
 import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -17,5 +18,5 @@ interface NewsEndpoint {
     fun searchNews(
         @Query("q") query: String,
         @Query("apiKey") apiKey: String
-    ): Single<NewsResponse>
+    ): Maybe<NewsResponse>
 }
