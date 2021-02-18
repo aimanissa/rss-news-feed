@@ -6,17 +6,17 @@ import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.widget.SearchView
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.aimanissa.android.newsfeed.R
-import com.aimanissa.android.newsfeed.ui.fragments.feed.adapter.NewsAdapter
 import com.aimanissa.android.newsfeed.data.app.model.NewsItem
 import com.aimanissa.android.newsfeed.databinding.FragmentNewsFeedBinding
 import com.aimanissa.android.newsfeed.di.components.NewsFeedFragmentSubcomponent
 import com.aimanissa.android.newsfeed.ui.activity.MainActivity
+import com.aimanissa.android.newsfeed.ui.fragments.feed.adapter.NewsAdapter
+import com.google.android.material.snackbar.Snackbar
 
 class NewsFeedFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
@@ -43,27 +43,31 @@ class NewsFeedFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     ): View {
         binding = FragmentNewsFeedBinding.inflate(inflater, container, false)
 
-        (activity as MainActivity).apply {
-            supportActionBar?.setDisplayHomeAsUpEnabled(false)
-        }
+        (activity as MainActivity).setBackButton(false)
 
         newsAdapter = NewsAdapter()
         newsAdapter.onItemClickListener = { s: String ->
             (activity as MainActivity).openNewsDetailsFragment(s)
         }
 
-        binding?.swipeRefresh?.apply {
-            setOnRefreshListener(this@NewsFeedFragment)
-            setColorSchemeResources(R.color.design_default_color_primary)
-        }
-
-        binding?.recyclerView?.apply {
-            LinearLayoutManager(context)
-            adapter = newsAdapter
+        binding?.apply {
+            swipeRefresh.apply {
+                setOnRefreshListener(this@NewsFeedFragment)
+                setColorSchemeResources(R.color.design_default_color_primary)
+            }
+            recyclerView.apply {
+                LinearLayoutManager(context)
+                adapter = newsAdapter
+            }
+            refreshButton.setOnClickListener {
+                viewModel.loadNews()
+            }
         }
 
         viewModel.apply {
             loadedNews.observe({ viewLifecycleOwner.lifecycle }, ::setItems)
+            isNewsFound.observe({ viewLifecycleOwner.lifecycle }, ::setVisibility)
+            isLoadError.observe({ viewLifecycleOwner.lifecycle }, ::showErrorMessage)
         }
 
         return binding!!.root
@@ -83,12 +87,38 @@ class NewsFeedFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         newsAdapter.updateNews(items)
     }
 
+    private fun setVisibility(isNewsFound: Boolean) {
+        binding?.apply {
+            if (isNewsFound) {
+                recyclerView.visibility = View.VISIBLE
+                textNoResult.visibility = View.GONE
+                refreshButton.visibility = View.GONE
+            } else {
+                recyclerView.visibility = View.GONE
+                textNoResult.visibility = View.VISIBLE
+                refreshButton.visibility = View.VISIBLE
+            }
+        }
+    }
+
+    private fun showErrorMessage(loadError: Boolean) {
+        if (loadError) {
+            view?.let {
+                Snackbar.make(it, R.string.error_connection, Snackbar.LENGTH_SHORT).show()
+            }
+        }
+    }
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.options_menu, menu)
+    }
 
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        super.onPrepareOptionsMenu(menu)
         val searchItem: MenuItem = menu.findItem(R.id.menu_item_search)
         val searchView = searchItem.actionView as SearchView
+
         searchView.apply {
             setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String?): Boolean {
@@ -100,6 +130,14 @@ class NewsFeedFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                     val inputManager =
                         context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
                     inputManager?.hideSoftInputFromWindow(this@apply.windowToken, 0)
+
+                    (activity as MainActivity).apply {
+                        setBackButton(true)
+                        toolbar.setNavigationOnClickListener {
+                            viewModel.loadNewsFromDb()
+                            setBackButton(false)
+                        }
+                    }
                     return true
                 }
 
@@ -115,6 +153,7 @@ class NewsFeedFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
             setOnCloseListener {
                 searchQuery = null
+                viewModel.loadNews()
                 onActionViewCollapsed()
                 true
             }

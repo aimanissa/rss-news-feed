@@ -3,6 +3,7 @@ package com.aimanissa.android.newsfeed.ui.activity
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import com.aimanissa.android.newsfeed.NewsApplication
 import com.aimanissa.android.newsfeed.R
 import com.aimanissa.android.newsfeed.databinding.ActivityMainBinding
@@ -45,7 +46,20 @@ class MainActivity : AppCompatActivity() {
         super.onBackPressed()
         val detailsFragment = supportFragmentManager.findFragmentByTag(TAG_DETAILS_FRAGMENT)
         if (detailsFragment != null) {
-            supportFragmentManager.popBackStack()
+            supportFragmentManager.beginTransaction()
+                .remove(detailsFragment)
+                .commit()
+        }
+    }
+
+    fun setBackButton(isAvailable: Boolean) {
+        if (isAvailable) {
+            supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            toolbar.navigationIcon = applicationContext.let {
+                ContextCompat.getDrawable(it, R.drawable.ic_back_white_24)
+            }
+        } else {
+            supportActionBar?.setDisplayHomeAsUpEnabled(false)
         }
     }
 

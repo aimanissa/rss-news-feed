@@ -16,6 +16,8 @@ class NewsFeedViewModel @Inject constructor(
     private var loadDisposable: Disposable? = null
 
     val loadedNews = MutableLiveData<List<NewsItem>>()
+    val isNewsFound = MutableLiveData<Boolean>()
+    val isLoadError = MutableLiveData<Boolean>()
 
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
     fun initViewModel() {
@@ -30,27 +32,33 @@ class NewsFeedViewModel @Inject constructor(
         loadNewsFromDb()
     }
 
-    private fun loadNews() {
+    fun loadNews() {
         loadDisposable?.dispose()
         loadDisposable = loader.loadNews()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 loadedNews.value = it
+                isNewsFound.value = true
+                isLoadError.value = false
             }, {
                 Log.e(TAG, "loadNews() error: ${it?.message}")
+                isLoadError.value = true
             })
     }
 
-    private fun loadNewsFromDb() {
+    fun loadNewsFromDb() {
         loadDisposable?.dispose()
         loadDisposable = loader.loadNewsFromDb()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 loadedNews.value = it
+                isNewsFound.value = true
+                isLoadError.value = false
             }, {
                 Log.e(TAG, "loadNewsFromDb() error: ${it?.message}")
+                isLoadError.value = true
             })
     }
 
@@ -61,8 +69,15 @@ class NewsFeedViewModel @Inject constructor(
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 loadedNews.value = it
+                isNewsFound.value = true
+                isLoadError.value = false
             }, {
                 Log.e(TAG, "loadSearchNews() error: ${it?.message}")
+                isLoadError.value = true
+            }, {
+                loadedNews.value = emptyList()
+                isNewsFound.value = false
+                isLoadError.value = false
             })
     }
 

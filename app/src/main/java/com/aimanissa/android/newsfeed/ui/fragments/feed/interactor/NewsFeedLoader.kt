@@ -17,8 +17,7 @@ class NewsFeedLoader @Inject constructor(
 
     fun loadNews(): Single<List<NewsItem>> {
         return endPoint.loadNews(QUERY_COUNTRY, QUERY_SIZE, API_KEY)
-            .map { it.articles }
-            .map { mapper.newsApiListToNewsItemsList(it) }
+            .map { mapper.newsApiListToNewsItemsList(it.articles) }
             .doOnSuccess {
                 repository.apply {
                     deleteAll()
@@ -34,8 +33,7 @@ class NewsFeedLoader @Inject constructor(
     fun loadSearchNews(query: String): Maybe<List<NewsItem>> {
         return endPoint.searchNews(query, API_KEY)
             .filter { it.totalResults > 0 }
-            .map { it.articles }
-            .map { mapper.newsApiListToNewsItemsList(it) }
+            .map { mapper.newsApiListToNewsItemsList(it.articles) }
             .doOnSuccess {
                 repository.apply {
                     deleteAll()

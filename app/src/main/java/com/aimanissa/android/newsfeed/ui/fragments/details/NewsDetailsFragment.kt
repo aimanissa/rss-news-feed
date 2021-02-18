@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.aimanissa.android.newsfeed.R
@@ -23,9 +22,7 @@ class NewsDetailsFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
         component = (activity as MainActivity).mainActivityComponent().newsDetailsComponent()
-
         viewModel = ViewModelProvider(this, component.viewModelFactory())
             .get(NewsDetailsViewModel::class.java)
 
@@ -34,7 +31,6 @@ class NewsDetailsFragment : Fragment() {
 
         lifecycle.addObserver(viewModel)
         viewModel.initViewModel()
-
     }
 
     override fun onCreateView(
@@ -45,10 +41,7 @@ class NewsDetailsFragment : Fragment() {
         binding = FragmentNewsDetailsBinding.inflate(inflater, container, false)
 
         (activity as MainActivity).apply {
-            supportActionBar?.setDisplayHomeAsUpEnabled(true)
-            toolbar.navigationIcon = context?.let {
-                ContextCompat.getDrawable(it, R.drawable.ic_back_white_24)
-            }
+            setBackButton(true)
             toolbar.setNavigationOnClickListener {
                 this.onBackPressed()
             }
@@ -75,9 +68,13 @@ class NewsDetailsFragment : Fragment() {
         binding?.apply {
             newsTitle.text = newsItem?.title
             newsDescription.text = newsItem?.description
-            Picasso.get()
-                .load(newsItem?.urlToImage)
-                .into(binding?.newsImageDetails)
+            if (newsItem?.urlToImage?.isEmpty() == true) {
+                binding?.newsImageDetails?.setImageResource(R.drawable.ic_image_placeholder)
+            } else {
+                Picasso.get()
+                    .load(newsItem?.urlToImage)
+                    .into(binding?.newsImageDetails)
+            }
         }
     }
 

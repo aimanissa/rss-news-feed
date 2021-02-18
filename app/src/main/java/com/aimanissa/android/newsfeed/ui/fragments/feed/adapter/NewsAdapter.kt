@@ -3,6 +3,7 @@ package com.aimanissa.android.newsfeed.ui.fragments.feed.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.aimanissa.android.newsfeed.R
 import com.aimanissa.android.newsfeed.data.app.model.NewsItem
 import com.aimanissa.android.newsfeed.databinding.NewsItemBinding
 import com.squareup.picasso.Picasso
@@ -33,8 +34,8 @@ class NewsAdapter : RecyclerView.Adapter<NewsAdapter.NewsHolder>() {
         notifyDataSetChanged()
     }
 
-    inner class NewsHolder(val newsItemBinding: NewsItemBinding) :
-        RecyclerView.ViewHolder(newsItemBinding.root) {
+    inner class NewsHolder(private val binding: NewsItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
         init {
             itemView.setOnClickListener {
@@ -43,11 +44,15 @@ class NewsAdapter : RecyclerView.Adapter<NewsAdapter.NewsHolder>() {
         }
 
         fun bind(newsItem: NewsItem) {
-            newsItemBinding.newsTitle.text = newsItem.title
-            newsItemBinding.newsDescription.text = newsItem.description
-            Picasso.get()
-                .load(newsItem.urlToImage)
-                .into(newsItemBinding.newsImageView)
+            binding.newsTitle.text = newsItem.title
+            binding.newsDescription.text = newsItem.description
+            if (newsItem.urlToImage.isEmpty()) {
+                binding.newsImageView.setImageResource(R.drawable.ic_image_placeholder)
+            } else {
+                Picasso.get()
+                    .load(newsItem.urlToImage)
+                    .into(binding.newsImageView)
+            }
         }
     }
 }

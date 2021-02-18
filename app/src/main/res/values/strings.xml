@@ -2,4 +2,7 @@
     <string name="app_name">News Feed</string>
     <string name="news_image">News Image</string>
     <string name="search">Search</string>
+    <string name="search_no_result">По вашему запросу ничего не найдено. Пожалуйста, обновите список новостей или измените свой запрос.</string>
+    <string name="error_connection">Ошибка соединения с сервером</string>
+    <string name="text_refresh">Обновить</string>
 </resources>
