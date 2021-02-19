@@ -12,29 +12,43 @@
         android:padding="16dp">
 
         <TextView
-            android:id="@+id/news_title"
+            android:id="@+id/title"
             style="?android:listSeparatorTextViewStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/black"
             android:layout_marginTop="16dp"
             android:padding="8dp"
             tools:text="News Title" />
 
         <ImageView
-            android:id="@+id/news_image_details"
+            android:id="@+id/news_image_view"
             android:layout_width="match_parent"
             android:layout_height="250dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:contentDescription="@string/news_image" />
 
         <TextView
-            android:id="@+id/news_description"
+            android:id="@+id/date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_gravity="end"
+            android:gravity="end"
+            android:singleLine="true"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            tools:text="19.01.2021  16:40" />
+
+        <TextView
+            android:id="@+id/description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="4dp"
             android:padding="8dp"
             android:textSize="16sp"
-            tools:text="News Description"/>
+            tools:text="Description"/>
 
     </LinearLayout>
 

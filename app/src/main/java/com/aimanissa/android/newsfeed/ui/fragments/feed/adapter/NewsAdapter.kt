@@ -1,5 +1,6 @@
 package com.aimanissa.android.newsfeed.ui.fragments.feed.adapter
 
+import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -44,8 +45,9 @@ class NewsAdapter : RecyclerView.Adapter<NewsAdapter.NewsHolder>() {
         }
 
         fun bind(newsItem: NewsItem) {
-            binding.newsTitle.text = newsItem.title
-            binding.newsDescription.text = newsItem.description
+            binding.title.text = newsItem.title
+            binding.description.text = newsItem.description
+            binding.date.text = DateFormat.format("dd.MM.yyyy HH:mm", newsItem.publishedAt)
             if (newsItem.urlToImage.isEmpty()) {
                 binding.newsImageView.setImageResource(R.drawable.ic_image_placeholder)
             } else {

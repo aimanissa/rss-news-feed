@@ -25,30 +25,47 @@
             android:contentDescription="@string/news_image" />
 
         <TextView
-            android:id="@+id/news_title"
-            android:layout_width="460dp"
+            android:id="@+id/title"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             tools:text="News Title"
             android:textSize="16sp"
             android:textStyle="bold"
             android:textColor="@color/black"
             android:maxLines="2"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
             android:padding="4dp"
             app:layout_constraintStart_toEndOf="@+id/news_image_view"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/news_description"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <TextView
-            android:id="@+id/news_description"
-            android:layout_width="460dp"
+            android:id="@+id/description"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             tools:text="News Description"
             android:textSize="14sp"
             android:maxLines="5"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
             app:layout_constraintStart_toEndOf="@+id/news_image_view"
-            app:layout_constraintTop_toBottomOf="@+id/news_title" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/title" />
+
+        <TextView
+            android:id="@+id/date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:gravity="end"
+            android:singleLine="true"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/news_image_view"
+            app:layout_constraintTop_toBottomOf="@+id/description"
+            tools:text="19.01.2021  16:40" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -43,8 +43,6 @@ class NewsFeedFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     ): View {
         binding = FragmentNewsFeedBinding.inflate(inflater, container, false)
 
-        (activity as MainActivity).setBackButton(false)
-
         newsAdapter = NewsAdapter()
         newsAdapter.onItemClickListener = { s: String ->
             (activity as MainActivity).openNewsDetailsFragment(s)
@@ -89,14 +87,22 @@ class NewsFeedFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     private fun setVisibility(isNewsFound: Boolean) {
         binding?.apply {
-            if (isNewsFound) {
-                recyclerView.visibility = View.VISIBLE
-                textNoResult.visibility = View.GONE
-                refreshButton.visibility = View.GONE
-            } else {
-                recyclerView.visibility = View.GONE
-                textNoResult.visibility = View.VISIBLE
-                refreshButton.visibility = View.VISIBLE
+            (activity as MainActivity).apply {
+                if (isNewsFound) {
+                    recyclerView.visibility = View.VISIBLE
+                    textNoResult.visibility = View.GONE
+                    refreshButton.visibility = View.GONE
+                    setBackButton(false)
+                } else {
+                    recyclerView.visibility = View.GONE
+                    textNoResult.visibility = View.VISIBLE
+                    refreshButton.visibility = View.VISIBLE
+                    setBackButton(true)
+                    toolbar.setNavigationOnClickListener {
+                        viewModel.loadNewsFromDb()
+                        setBackButton(false)
+                    }
+                }
             }
         }
     }
@@ -130,14 +136,6 @@ class NewsFeedFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                     val inputManager =
                         context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
                     inputManager?.hideSoftInputFromWindow(this@apply.windowToken, 0)
-
-                    (activity as MainActivity).apply {
-                        setBackButton(true)
-                        toolbar.setNavigationOnClickListener {
-                            viewModel.loadNewsFromDb()
-                            setBackButton(false)
-                        }
-                    }
                     return true
                 }
 

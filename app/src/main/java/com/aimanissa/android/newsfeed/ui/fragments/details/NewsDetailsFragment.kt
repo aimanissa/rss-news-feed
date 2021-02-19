@@ -1,6 +1,7 @@
 package com.aimanissa.android.newsfeed.ui.fragments.details
 
 import android.os.Bundle
+import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,6 +23,7 @@ class NewsDetailsFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
         component = (activity as MainActivity).mainActivityComponent().newsDetailsComponent()
         viewModel = ViewModelProvider(this, component.viewModelFactory())
             .get(NewsDetailsViewModel::class.java)
@@ -66,14 +68,15 @@ class NewsDetailsFragment : Fragment() {
 
     private fun updateUI() {
         binding?.apply {
-            newsTitle.text = newsItem?.title
-            newsDescription.text = newsItem?.description
-            if (newsItem?.urlToImage?.isEmpty() == true) {
-                binding?.newsImageDetails?.setImageResource(R.drawable.ic_image_placeholder)
+            title.text = newsItem?.title
+            description.text = newsItem?.description
+            date.text = DateFormat.format("dd.MM.yyyy HH:mm", newsItem?.publishedAt)
+            if (newsItem?.urlToImage.isNullOrEmpty()) {
+                binding?.newsImageView?.setImageResource(R.drawable.ic_image_placeholder)
             } else {
                 Picasso.get()
                     .load(newsItem?.urlToImage)
-                    .into(binding?.newsImageDetails)
+                    .into(binding?.newsImageView)
             }
         }
     }

@@ -2,6 +2,7 @@ package com.aimanissa.android.newsfeed.data.app.mapper
 
 import com.aimanissa.android.newsfeed.data.app.db.NewsEntity
 import com.aimanissa.android.newsfeed.data.app.model.NewsItem
+import java.util.*
 
 class DatabaseMapper {
 
@@ -11,6 +12,7 @@ class DatabaseMapper {
         newsItem.title = entity.title
         newsItem.description = entity.description
         newsItem.urlToImage = entity.urlToImage
+        entityDateToNewsItemDate(entity.publishedAt)
         return newsItem
     }
 
@@ -28,6 +30,7 @@ class DatabaseMapper {
         entity.title = newsItem.title
         entity.description = newsItem.description
         entity.urlToImage = newsItem.urlToImage
+        newsItemDateToEntityDate(newsItem.publishedAt)
         return entity
     }
 
@@ -37,5 +40,13 @@ class DatabaseMapper {
             newsItemToEntity(newsItem)?.let { entities.add(it) }
         }
         return entities
+    }
+
+    private fun entityDateToNewsItemDate(entityDate: Long?): Date? {
+        return entityDate?.let { Date(it) }
+    }
+
+    private fun newsItemDateToEntityDate(date: Date?): Long? {
+        return date?.time
     }
 }
