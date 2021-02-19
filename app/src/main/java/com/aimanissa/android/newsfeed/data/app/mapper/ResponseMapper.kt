@@ -1,7 +1,6 @@
 package com.aimanissa.android.newsfeed.data.app.mapper
 
 
-import android.annotation.SuppressLint
 import com.aimanissa.android.newsfeed.data.app.api.NewsApiModel
 import com.aimanissa.android.newsfeed.data.app.model.NewsItem
 import java.text.SimpleDateFormat
@@ -32,10 +31,16 @@ class ResponseMapper {
         return newsItems
     }
 
-    @SuppressLint("SimpleDateFormat")
     private fun newsApiDateToNewsItemDate(apiDate: String?): Date? {
-        return apiDate?.let {
-            SimpleDateFormat("yyyy-MM-dd'T'HH:mm:SS'Z'").parse(it)
+        return when (apiDate) {
+            PATTERN_ONE -> SimpleDateFormat(PATTERN_ONE, Locale.ENGLISH).parse(apiDate)
+            PATTERN_TWO -> SimpleDateFormat(PATTERN_TWO, Locale.ENGLISH).parse(apiDate)
+            else -> null
         }
+    }
+
+    companion object {
+        private const val PATTERN_ONE = "yyyy-MM-dd'T'HH:mm:SS'Z'"
+        private const val PATTERN_TWO = "yyyy-MM-dd'T'HH:mm:SS+HH:mm"
     }
 }

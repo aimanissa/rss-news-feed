@@ -1,5 +1,6 @@
 package com.aimanissa.android.newsfeed.data.app.mapper
 
+import androidx.room.TypeConverter
 import com.aimanissa.android.newsfeed.data.app.db.NewsEntity
 import com.aimanissa.android.newsfeed.data.app.model.NewsItem
 import java.util.*
@@ -42,11 +43,13 @@ class DatabaseMapper {
         return entities
     }
 
-    private fun entityDateToNewsItemDate(entityDate: Long?): Date? {
+    @TypeConverter
+    fun entityDateToNewsItemDate(entityDate: Long?): Date? {
         return entityDate?.let { Date(it) }
     }
 
-    private fun newsItemDateToEntityDate(date: Date?): Long? {
+    @TypeConverter
+    fun newsItemDateToEntityDate(date: Date?): Long? {
         return date?.time
     }
 }
