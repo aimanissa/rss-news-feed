@@ -19,6 +19,6 @@ class NewsEntity {
     var urlToImage: String = ""
 
     @ColumnInfo(name = "publishedAt")
-    var publishedAt: Long = 0
+    var publishedAt: Long = 0L
 }
 

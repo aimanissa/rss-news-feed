@@ -10,5 +10,5 @@ data class NewsItem(
 
     var urlToImage: String = "",
 
-    var publishedAt: Date = Date(),
+    var publishedAt: Date = Date()
 )

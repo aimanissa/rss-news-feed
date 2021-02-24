@@ -1,11 +1,10 @@
 package com.aimanissa.android.newsfeed.data.app.mapper
 
-
+import android.util.Log
 import com.aimanissa.android.newsfeed.data.app.api.NewsApiModel
 import com.aimanissa.android.newsfeed.data.app.model.NewsItem
 import java.text.SimpleDateFormat
 import java.util.*
-
 
 class ResponseMapper {
 
@@ -15,7 +14,7 @@ class ResponseMapper {
         newsItem.title = newsApiModel.title.toString()
         newsItem.description = newsApiModel.description.toString()
         newsItem.urlToImage = newsApiModel.urlToImage.toString()
-        newsApiDateToNewsItemDate(newsApiModel.publishedAt)
+        newsItem.publishedAt = newsApiDateToNewsItemDate(newsApiModel.publishedAt.toString())!!
         return newsItem
     }
 
@@ -31,16 +30,12 @@ class ResponseMapper {
         return newsItems
     }
 
-    private fun newsApiDateToNewsItemDate(apiDate: String?): Date? {
-        return when (apiDate) {
-            PATTERN_ONE -> SimpleDateFormat(PATTERN_ONE, Locale.ENGLISH).parse(apiDate)
-            PATTERN_TWO -> SimpleDateFormat(PATTERN_TWO, Locale.ENGLISH).parse(apiDate)
-            else -> null
-        }
+    private fun newsApiDateToNewsItemDate(apiDate: String): Date? {
+        Log.d("ResponseMapper", "apiDate: $apiDate")
+        return SimpleDateFormat(PATTERN, Locale.US).parse(apiDate)
     }
 
     companion object {
-        private const val PATTERN_ONE = "yyyy-MM-dd'T'HH:mm:SS'Z'"
-        private const val PATTERN_TWO = "yyyy-MM-dd'T'HH:mm:SS+HH:mm"
+        private const val PATTERN = "yyyy-MM-dd'T'HH:mm:ss"
     }
 }
