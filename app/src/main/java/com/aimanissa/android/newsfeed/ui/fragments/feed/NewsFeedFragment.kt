@@ -1,22 +1,28 @@
 package com.aimanissa.android.newsfeed.ui.fragments.feed
 
+
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.widget.SearchView
+import androidx.core.content.edit
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.work.*
 import com.aimanissa.android.newsfeed.R
 import com.aimanissa.android.newsfeed.data.app.model.NewsItem
 import com.aimanissa.android.newsfeed.databinding.FragmentNewsFeedBinding
 import com.aimanissa.android.newsfeed.di.components.NewsFeedFragmentSubcomponent
 import com.aimanissa.android.newsfeed.ui.activity.MainActivity
 import com.aimanissa.android.newsfeed.ui.fragments.feed.adapter.NewsAdapter
+import com.aimanissa.android.newsfeed.ui.fragments.feed.service.UpdateWorker
 import com.google.android.material.snackbar.Snackbar
+import java.util.concurrent.TimeUnit
 
 class NewsFeedFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
@@ -24,7 +30,6 @@ class NewsFeedFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     private lateinit var viewModel: NewsFeedViewModel
     private lateinit var component: NewsFeedFragmentSubcomponent
     private lateinit var newsAdapter: NewsAdapter
-    private var searchQuery: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +39,16 @@ class NewsFeedFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             .get(NewsFeedViewModel::class.java)
         lifecycle.addObserver(viewModel)
         viewModel.initViewModel()
+
+        val workRequest =
+            PeriodicWorkRequestBuilder<UpdateWorker>(30, TimeUnit.MINUTES)
+                .setBackoffCriteria(BackoffPolicy.LINEAR,10, TimeUnit.SECONDS).build()
+        WorkManager.getInstance(requireContext())
+            .enqueueUniquePeriodicWork(
+                "update_worker",
+                ExistingPeriodicWorkPolicy.REPLACE,
+                workRequest
+            )
     }
 
     override fun onCreateView(
@@ -130,7 +145,10 @@ class NewsFeedFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                 override fun onQueryTextSubmit(query: String?): Boolean {
                     Log.d(TAG, "onQueryTextSubmit: $query")
                     query?.let { viewModel.loadSearchNews(it) }
-                    searchQuery = query
+
+                    //save query
+                    PreferenceManager.getDefaultSharedPreferences(context)
+                        .edit { putString(PREF_SEARCH_QUERY, query) }
 
                     //hide keyboard after input
                     val inputManager =
@@ -146,12 +164,14 @@ class NewsFeedFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             })
 
             setOnSearchClickListener {
-                this.setQuery(searchQuery, false)
+                val query = PreferenceManager.getDefaultSharedPreferences(context)
+                    .getString(PREF_SEARCH_QUERY, "")
+                this.setQuery(query, false)
             }
 
             setOnCloseListener {
-                searchQuery = null
                 viewModel.loadNews()
+                PreferenceManager.getDefaultSharedPreferences(context).edit { clear() }
                 onActionViewCollapsed()
                 true
             }
@@ -160,6 +180,7 @@ class NewsFeedFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     companion object {
         private const val TAG = "NewsFeedFragment"
+        const val PREF_SEARCH_QUERY = "searchQuery"
 
         fun newInstance() = NewsFeedFragment()
     }

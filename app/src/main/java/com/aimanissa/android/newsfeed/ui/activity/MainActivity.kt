@@ -1,5 +1,7 @@
 package com.aimanissa.android.newsfeed.ui.activity
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -67,5 +69,9 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val TAG_DETAILS_FRAGMENT = "NewsDetailsFragment"
+
+        fun newIntent(context: Context): Intent {
+            return Intent(context, MainActivity::class.java)
+        }
     }
 }

@@ -17,6 +17,9 @@ interface NewsDao {
     @Query("SELECT * FROM news_headlines WHERE title=(:newsTitle)")
     fun getNewsByTitle(newsTitle: String): NewsEntity
 
+    @Query("SELECT * FROM news_headlines ORDER BY id DESC LIMIT 1")
+    fun getLastNewsItem(): NewsEntity
+
     @Query("DELETE FROM news_headlines")
     fun deleteAll()
 }

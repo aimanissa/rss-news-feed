@@ -10,7 +10,7 @@ import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 class NewsFeedViewModel @Inject constructor(
-    private var loader: NewsFeedLoader
+    private val loader: NewsFeedLoader
 ) : ViewModel(), LifecycleObserver {
 
     private var loadDisposable: Disposable? = null

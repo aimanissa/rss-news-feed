@@ -24,6 +24,10 @@ class NewsRepositoryImpl @Inject constructor(
         return mapper.entityToNewsItem(newsDao.getNewsByTitle(newsTitle))
     }
 
+    override fun getLastNewsItem(): NewsItem? {
+        return  mapper.entityToNewsItem(newsDao.getLastNewsItem())
+    }
+
     override fun deleteAll() {
         return newsDao.deleteAll()
     }

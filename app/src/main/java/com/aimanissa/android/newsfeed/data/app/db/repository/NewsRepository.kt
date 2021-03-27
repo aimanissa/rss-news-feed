@@ -10,5 +10,7 @@ interface NewsRepository {
 
     fun getNewsByTitle(newsTitle: String): NewsItem?
 
+    fun getLastNewsItem(): NewsItem?
+
     fun deleteAll()
 }

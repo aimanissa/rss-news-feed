@@ -10,9 +10,9 @@ import io.reactivex.Single
 import javax.inject.Inject
 
 class NewsFeedLoader @Inject constructor(
-    private var endPoint: NewsEndpoint,
-    private var repository: NewsRepositoryImpl,
-    private var mapper: ResponseMapper
+    private val endPoint: NewsEndpoint,
+    private val repository: NewsRepositoryImpl,
+    private val mapper: ResponseMapper
 ) {
 
     fun loadNews(): Single<List<NewsItem>> {
@@ -40,6 +40,10 @@ class NewsFeedLoader @Inject constructor(
                     saveAll(it)
                 }
             }
+    }
+
+    fun loadLastNewsItemFromDb(): Single<NewsItem> {
+        return Single.fromCallable { repository.getLastNewsItem() }
     }
 
     companion object {

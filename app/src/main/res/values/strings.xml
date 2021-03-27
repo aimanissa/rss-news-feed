@@ -5,4 +5,7 @@
     <string name="search_no_result">По вашему запросу ничего не найдено. Пожалуйста, обновите список новостей или измените свой запрос.</string>
     <string name="error_connection">Ошибка соединения с сервером</string>
     <string name="text_refresh">Обновить</string>
+    <string name="notification_channel_name">NewsFeed</string>
+    <string name="new_news_title">NewsFeed Свежие Новости</string>
+    <string name="new_news_text">Вам доступны последние новости на данную минуту</string>
 </resources>
